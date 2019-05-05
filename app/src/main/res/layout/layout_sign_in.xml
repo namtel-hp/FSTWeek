@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient1">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:id="@+id/initialLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
+
+                <ImageView
+
+                    android:layout_width="160dp"
+                    android:layout_height="130dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="20dp"
+                    android:src="@drawable/logo" />
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/sign_up_textinput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/email_textview"
+                        style="@style/sign_up_edittextView"
+                        android:fontFamily="sans-serif"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/sign_up_textinput"
+                    app:passwordToggleEnabled="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/password_textview"
+                        style="@style/sign_up_edittextView"
+
+                        android:hint="Password"
+
+                        android:inputType="textPassword" />
+                </android.support.design.widget.TextInputLayout>
+
+
+
+                <Button
+                    android:layout_marginTop="25dp"
+                    android:id="@+id/sign_in_button"
+                    style="@style/sign_up_button"
+                    android:background="@color/kuet_color_dark"
+                    android:text="Sign In"
+                    android:textColor="@color/common_button_text_color"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/goto_sign_up_button"
+                    style="@style/sign_up_button"
+                    android:background="@color/blue"
+                    android:text="Register for conference"
+                    android:textColor="@color/common_button_text_color"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/loadingSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_black"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/optional_progressBar1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/optional_progressBar1"
+            android:layout_margin="19dp"
+            android:gravity="center"
+            android:lineSpacingExtra="8sp"
+            android:text="Signing In..."
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+    </RelativeLayout>
+</RelativeLayout>
