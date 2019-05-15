@@ -2,15 +2,45 @@ package com.qerat.fstweek;
 
 public class UserDetails {
     private String email, age, level, phnNo, name;
-    private Boolean mentorship;
 
-    UserDetails(String name, String age, String phnNo, String level, String email, Boolean mentorship) {
+    private ConferenceInformation conferenceInformation;
+    private MentorshipInformation mentorshipInformation;
+
+    UserDetails(String name, String age, String phnNo, String level, String email) {
         this.email = email;
         this.age = age;
         this.level = level;
         this.phnNo = phnNo;
         this.name = name;
-        this.mentorship = mentorship;
+    }
+
+    UserDetails(String name, String age, String phnNo, String level, String email,  ConferenceInformation conferenceInformation) {
+        this.email = email;
+        this.age = age;
+        this.level = level;
+        this.phnNo = phnNo;
+        this.name = name;
+
+        this.conferenceInformation=conferenceInformation;
+    }
+    UserDetails(String name, String age, String phnNo, String level, String email,  MentorshipInformation mentorshipInformation) {
+        this.email = email;
+        this.age = age;
+        this.level = level;
+        this.phnNo = phnNo;
+        this.name = name;
+
+        this.mentorshipInformation=mentorshipInformation;
+    }
+
+    UserDetails(String name, String age, String phnNo, String level, String email,  ConferenceInformation conferenceInformation, MentorshipInformation mentorshipInformation) {
+        this.email = email;
+        this.age = age;
+        this.level = level;
+        this.phnNo = phnNo;
+        this.name = name;
+        this.mentorshipInformation=mentorshipInformation;
+        this.conferenceInformation=conferenceInformation;
     }
 
     UserDetails() {
@@ -57,11 +87,21 @@ public class UserDetails {
         this.name = name;
     }
 
-    public Boolean getMentorship() {
-        return mentorship;
+
+
+    public ConferenceInformation getConferenceInformation() {
+        return conferenceInformation;
     }
 
-    public void setMentorship(Boolean mentorship) {
-        this.mentorship = mentorship;
+    public void setConferenceInformation(ConferenceInformation conferenceInformation) {
+        this.conferenceInformation = conferenceInformation;
+    }
+
+    public MentorshipInformation getMentorshipInformation() {
+        return mentorshipInformation;
+    }
+
+    public void setMentorshipInformation(MentorshipInformation mentorshipInformation) {
+        this.mentorshipInformation = mentorshipInformation;
     }
 }

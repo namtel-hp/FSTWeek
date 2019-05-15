@@ -1,5 +1,6 @@
 package com.qerat.fstweek;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,8 +32,9 @@ import java.util.Map;
 
 public class SignInActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    RelativeLayout  secondRelativeLayout;
-    LinearLayout initRelativeLayout;
+    public static final int CONF_INFO=1,MENT_INFO=2,MAIN_ACTV=3, SIGN_IN=4;
+    public static final String POSITION_KEY="pos";
+    LinearLayout initRelativeLayout,secondLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,24 +43,21 @@ public class SignInActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-        if (auth.getCurrentUser() != null) {
-            checkEmailVerified();
-        }
+
 
 
         initRelativeLayout = findViewById(R.id.initialLayout);
-        secondRelativeLayout = findViewById(R.id.loadingSignIn);
-
-
-
+        secondLinearLayout= findViewById(R.id.loadingSignIn);
 
 
         Button signUpBtn = findViewById(R.id.goto_sign_up_button);
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -67,11 +69,11 @@ public class SignInActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                hideKeyboard();
                 ValidationClass validationClass = new ValidationClass(emailEditText, passwordEditText);
                 if (validationClass.validateEmail() && validationClass.validatePassword()) {
                     secondState();
-                    String email = emailEditText.getText().toString(), password = passwordEditText.getText().toString();
+                    String email = emailEditText.getText().toString().replaceAll("\\s+",""), password = passwordEditText.getText().toString();
                     auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -80,7 +82,57 @@ public class SignInActivity extends AppCompatActivity {
                                 snackbar.show();
                                 initialState();
                             } else {
-                                checkEmailVerified();
+
+                                FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).child("conferenceInformation").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            Intent intent = new Intent(SignInActivity.this, ConferenceInfoActivity.class);
+                                            startActivity(intent);
+
+                                            SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putInt(POSITION_KEY, CONF_INFO);
+                                            editor.commit();
+                                            SignInActivity.this.finish();
+
+                                        } else {
+                                            FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).child("mentorshipInformation").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot snapshot) {
+                                                    if (!snapshot.exists()) {
+                                                        Intent intent = new Intent(SignInActivity.this, MentorshipInfoActivity.class);
+                                                        startActivity(intent);
+                                                        SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putInt(POSITION_KEY, MENT_INFO);
+                                                        editor.commit();
+                                                        SignInActivity.this.finish();
+                                                    } else {
+                                                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                                        startActivity(intent);
+                                                        SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putInt(POSITION_KEY, MAIN_ACTV);
+                                                        editor.commit();
+                                                        SignInActivity.this.finish();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                    initialState();
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        initialState();
+                                    }
+                                });
+
                             }
                         }
                     });
@@ -89,67 +141,45 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private void checkEmailVerified() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user.isEmailVerified()) {
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if (auth.getCurrentUser() != null) {
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
-            final String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            FirebaseUtilClass.getDatabaseReference().child("TempUsers").child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final Map<String, String> map = (HashMap) dataSnapshot.getValue();
-                    if (map != null) {
-                        final String batchName = map.get("Batch"),
-                                rollName = map.get("Roll"),
-                                deptName = map.get("Department");
 
-                        FirebaseUtilClass.getDatabaseReference().child("TempUsers").child(UID).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    FirebaseUtilClass.getDatabaseReference().child("Users").child(UID).setValue(map);
-                                    FirebaseUtilClass.getDatabaseReference().child("UsersTree").child(batchName).child(deptName).child(rollName).setValue(UID);
-
-                                    finish();
-                                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-
-                                }
-                            }
-                        });
-                    } else {
-                        finish();
-                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        } else {
-            // email is not verified, so just prompt the message to the user and restart this activity.
-            // NOTE: don't forget to log out the user.
-
-            startActivity(new Intent(this, NotVerifiedEmailActivity.class));
-            initialState();
-            //restart this activity
-
+            int pur = sharedPref.getInt(POSITION_KEY, MAIN_ACTV);
+            if(pur==MAIN_ACTV) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }else if(pur==CONF_INFO){
+                Intent intent = new Intent(this, ConferenceInfoActivity.class);
+                startActivity(intent);
+            }else if(pur==MENT_INFO){
+                Intent intent = new Intent(this, ConferenceInfoActivity.class);
+                startActivity(intent);
+            }
+            this.finish();
         }
     }
 
+
     private void initialState() {
         initRelativeLayout.setVisibility(View.VISIBLE);
-        secondRelativeLayout.setVisibility(View.GONE);
+        secondLinearLayout.setVisibility(View.GONE);
     }
 
     private void secondState() {
-        initRelativeLayout.setVisibility(View.GONE);
-        secondRelativeLayout.setVisibility(View.VISIBLE);
+        initRelativeLayout.setVisibility(View.INVISIBLE);
+        secondLinearLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).
+                    hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

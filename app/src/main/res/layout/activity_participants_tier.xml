@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient1"
+    android:gravity="center_horizontal"
+    android:id="@+id/parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/optional_textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="casual"
+        android:text="Conference Information"
+        android:textColor="@android:color/white"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+
+            android:elevation="5dp"
+            app:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:id="@+id/loadingLayout"
+                android:gravity="center">
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="One moment please..."/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:orientation="vertical"
+                android:paddingTop="15dp"
+
+                android:id="@+id/inputLayout"
+                android:paddingBottom="15dp">
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textinputlayout_tier"
+                    android:layout_marginTop="20dp"
+                    style="@style/sign_up_textinput">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight=".28"
+                        android:background="@drawable/spinner_back"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/spinner_tier"
+                            style="@style/sign_up_edittextView"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginRight="8dp"
+                            android:gravity="center"
+
+                            android:layout_centerVertical="true"
+                            android:entries="@array/tiers"
+                            android:spinnerMode="dialog"
+
+                            />
+
+
+                    </RelativeLayout>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textinputlayout_job"
+                    android:layout_marginTop="15dp"
+                    style="@style/sign_up_textinput">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight=".28"
+                        android:background="@drawable/spinner_back"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/spinner_job"
+                            style="@style/sign_up_edittextView"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginRight="8dp"
+                            android:gravity="center"
+                            android:spinnerMode="dialog"
+                            android:layout_centerVertical="true"
+                            android:entries="@array/job" />
+
+
+                    </RelativeLayout>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textinputlayout_area"
+                    android:paddingBottom="15dp"
+
+                    style="@style/sign_up_textinput">
+                    <TextView
+                        style="@style/sign_up_textView"
+                        android:text="Area of interest"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        />
+                    <CheckBox
+                        android:id="@+id/checkbox_climate"
+                        style="@style/conference_info_checkbox"
+                        android:text="@string/conf_checkitem1" />
+                    <CheckBox
+                        android:id="@+id/checkbox_data"
+                        style="@style/conference_info_checkbox"
+                        android:text="@string/conf_checkitem2" />
+                    <CheckBox
+                        android:id="@+id/checkbox_energy"
+                        style="@style/conference_info_checkbox"
+                        android:text="@string/conf_checkitem3" />
+                    <CheckBox
+                        style="@style/conference_info_checkbox"
+                        android:id="@+id/checkbox_health"
+                        android:text="@string/conf_checkitem4" />
+                    <CheckBox
+                        style="@style/conference_info_checkbox"
+                        android:id="@+id/checkbox_cannabis"
+                        android:text="@string/conf_checkitem5" />
+                </android.support.design.widget.TextInputLayout>
+
+
+
+
+                <Button
+                    android:id="@+id/button_save"
+                    style="@style/sign_up_button"
+
+                    android:background="@color/kuet_color_dark"
+                    android:text="Save and Continue"
+                    android:textColor="@color/common_button_text_color"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+
+</LinearLayout>

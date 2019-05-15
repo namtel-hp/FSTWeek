@@ -2,6 +2,7 @@ package com.qerat.fstweek;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -37,12 +38,15 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputLayout fullNameTextInputLayout, emailTextInputLayout, ageTextInputLayout, passwordTextInputLayout, confirmPasswordTextInputLayout, phoneNoTextInputLayout, levelTextInputLayout;
     private Spinner levelSpinner;
     private Button signUpButton, signInButton, okButton;
-    private CheckBox mentorshipCheckBox;
+
     private FirebaseAuth auth;
 private LinearLayout parent,loadingLayout, inputLayout, successLayout;
     @Override
     public void onBackPressed() {
-        new YesNoAlertDialog(this, "Sure?", "All data will be lost. Do you want to cancel registration?").Show();
+        Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+        startActivity(intent);
+        super.onBackPressed();
+
     }
 
     @Override
@@ -62,7 +66,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         signInButton = findViewById(R.id.button_signin);
         signUpButton = findViewById(R.id.button_signup);
         parent=findViewById(R.id.parent);
-        mentorshipCheckBox = findViewById(R.id.checkbox_signupmentorship);
+
         loadingLayout=findViewById(R.id.loadingLayout);
         inputLayout=findViewById(R.id.inputLayout);
         successLayout=findViewById(R.id.successLayout);
@@ -73,6 +77,8 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(SignUpActivity.this, ConferenceInfoActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -203,13 +209,13 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
             public void onClick(View v) {
                 hideKeyboard();
                 String fullname = fullNameTextInputLayout.getEditText().getText().toString();
-                String email = emailTextInputLayout.getEditText().getText().toString();
-                String age = ageTextInputLayout.getEditText().getText().toString();
-                String phnNo = phoneNoTextInputLayout.getEditText().getText().toString();
+                String email = emailTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
+                String age = ageTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
+                String phnNo = phoneNoTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
                 String selectedLevel = levelSpinner.getSelectedItem().toString();
                 String password = passwordTextInputLayout.getEditText().getText().toString();
                 String confirmmPassword = confirmPasswordTextInputLayout.getEditText().getText().toString();
-                Boolean mentorship=false;
+
 
 
                 if (!validateFullName(fullname)) {
@@ -225,7 +231,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
                     return;
                 }
 
-                if (!validateLevel(selectedLevel)) {
+                if (!validateLevel()) {
                     levelTextInputLayout.setError("Select a level");
                     return;
                 }
@@ -241,10 +247,8 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
                     confirmPasswordTextInputLayout.setError("Password not match");
                     return;
                 }
-                if(mentorshipCheckBox.isChecked()){
-                    mentorship=true;
-                }
-                signMeUp(fullname,age,phnNo,selectedLevel,email, password,mentorship);
+
+                signMeUp(fullname,age,phnNo,selectedLevel,email, password);
 
 
             }
@@ -271,11 +275,15 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
     }
 
     private void putInformation(UserDetails user){
-        FirebaseUtilClass.getDatabaseReference().child("Inventory").child("Items").child(auth.getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 
                 successState();
+                SharedPreferences sharedPref = SignUpActivity.this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(SignInActivity.POSITION_KEY, SignInActivity.CONF_INFO);
+                editor.commit();
 
             }
 
@@ -287,7 +295,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         });
     }
 
-    private void signMeUp(final String fullname, final String age, final String phnNo, final String selectedLevel,final String email, final String password, final Boolean mentorship) {
+    private void signMeUp(final String fullname, final String age, final String phnNo, final String selectedLevel,final String email, final String password) {
         loadingState();
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -298,7 +306,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
                     inputState();
                 } else {
 
-                    putInformation(new UserDetails(fullname,age,phnNo,selectedLevel,email,mentorship));
+                    putInformation(new UserDetails(fullname,age,phnNo,selectedLevel,email));
 
 
                 }
@@ -324,9 +332,9 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    public boolean validateLevel(String level) {
+    public boolean validateLevel() {
 
-        return !level.toLowerCase().equals("select level".toLowerCase());
+        return !(levelSpinner.getSelectedItemPosition()==0);
     }
 
     public boolean validatePassword(String password) {

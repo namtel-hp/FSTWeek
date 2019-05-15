@@ -6,7 +6,16 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
+    <string name="conf_checkitem1">Climate Change, Disaster Preparedness and Management, Environmental and Earth Sciences</string>
+    <string name="conf_checkitem2">Data Application, It\'s Management and Security, Information Technology</string>
+    <string name="conf_checkitem3">Energy, Fuels, Green Tech and Renewables</string>
+    <string name="conf_checkitem4">Health, Safety, Medicine and Medicinal Technology, Pharmaceuticals and Wellness</string>
+    <string name="conf_checkitem5">Cannabis - Science and the Issues</string>
+    <string name="ment_checkitem1">Life Sciences</string>
+    <string name="ment_checkitem2">Chemistry</string>
+    <string name="ment_checkitem3">Physics</string>
+    <string name="ment_checkitem4">Mathematics and Statistics</string>
+    <string name="ment_checkitem5">Computing and Information Technology</string>
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
@@ -30,4 +39,37 @@
         <item>BECM</item>
         <item>ARCH</item>
     </string-array>
+    <string-array name="tiers">
+        <item>--Select Your Tier--</item>
+        <item>Academic</item>
+        <item>Business Professional</item>
+        <item>Industry Expert</item>
+    </string-array>
+    <string-array name="job">
+        <item>--Select Your Job--</item>
+        <item>Student</item>
+        <item>Academic</item>
+        <item>Business Professional</item>
+        <item>Industry Expert</item>
+    </string-array>
+    <string-array name="purpose">
+        <item>--Select Your Purpose--</item>
+        <item>Personal</item>
+        <item>Professional</item>
+        <item>Internship</item>
+        <item>Networking</item>
+        <item>Research</item>
+    </string-array>
+    <string-array name="day">
+
+        <item>Day 1</item>
+        <item>Day 2</item>
+        <item>Day 3</item>
+        <item>Day 4</item>
+        <item>Day 5</item>
+    </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

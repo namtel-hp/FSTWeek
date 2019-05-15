@@ -1,9 +1,6 @@
 package com.qerat.fstweek;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -16,21 +13,19 @@ import android.view.Menu;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private Toolbar toolbar;
+    private EventsContainerFragment eventsContainerFragment;
+    private KeyNoteSpeakerContainerFragment speakerContainerFragment;
+    private MeetConferencePeopleFragmennt meetConferencePeopleFragmennt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -38,6 +33,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_event));
+        navigationView.setCheckedItem(R.id.nav_event);
+        toolbar.setTitle("Events");
     }
 
     @Override
@@ -78,20 +77,36 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_event) {
+            if (eventsContainerFragment == null) {
+                eventsContainerFragment = new EventsContainerFragment();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventsContainerFragment).commit();
+            toolbar.setTitle("Events");
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_speaker) {
+            if (speakerContainerFragment == null) {
+                speakerContainerFragment = new KeyNoteSpeakerContainerFragment();
+            }
+            toolbar.setTitle("Speakers");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, speakerContainerFragment).commit();
+        } else if (id == R.id.nav_meeting) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            toolbar.setTitle("Meeting");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeetMentorFragment()).commit();
+        } else if (id == R.id.nav_mygroup) {
+            toolbar.setTitle("My Group");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyGroupFragment()).commit();
+        } else if (id == R.id.nav_meetup) {
+            if (meetConferencePeopleFragmennt == null) {
+                meetConferencePeopleFragmennt = new MeetConferencePeopleFragmennt();
+            }
+            toolbar.setTitle("Meet Up");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, meetConferencePeopleFragmennt).commit();
+        } else if (id == R.id.nav_panel) {
+            toolbar.setTitle("Panel Discussions");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PanelDiscussionsFragment()).commit();
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
