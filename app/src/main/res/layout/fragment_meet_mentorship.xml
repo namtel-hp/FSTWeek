@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
         android:id="@+id/allOkLayout"
-        android:visibility="gone">
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -141,23 +141,24 @@
             android:gravity="center"
             android:text="Discussions" />
 
-        <TextView
-            android:id="@+id/noDiscussionsMsg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="No discussions"
-            android:textStyle="italic"
-            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/discussions"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-
             android:layout_weight=".5"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/noDiscussionsMsg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight=".8"
+            android:gravity="center"
+            android:text="No discussions"
+            android:textStyle="italic" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -182,19 +183,19 @@
             <Button
                 android:id="@+id/postButton"
                 style="@style/sign_up_button"
-                android:layout_margin="0dp"
-                android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="POST" />
+                android:layout_margin="0dp"
+                android:text="POST"
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/noMeetUpLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/noMeetUpLayout"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -215,10 +216,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/notAMentorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/notAMentorLayout"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -237,10 +238,10 @@
             android:textSize="16sp" />
 
         <Button
+            android:id="@+id/signUpButton"
             style="@style/sign_up_button"
             android:layout_width="wrap_content"
             android:text="Sign Up Now"
-            android:id="@+id/signUpButton"
             android:textColor="@android:color/white" />
 
     </LinearLayout>
@@ -250,7 +251,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <ProgressBar
             android:layout_width="30dp"
@@ -264,6 +266,31 @@
             android:text="Loading"
 
             />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/failedLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_sentiment_very_dissatisfied_black_24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Check internet connection"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
 
     </LinearLayout>

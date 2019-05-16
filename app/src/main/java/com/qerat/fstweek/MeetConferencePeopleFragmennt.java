@@ -44,7 +44,7 @@ public class MeetConferencePeopleFragmennt extends Fragment {
     private ImageView locImageView;
     private Button sendMsgButton;
     private MeetUpClass item;
-    private boolean listenForMessage = true;
+
     private LinearLayout allOKLayout, loadingLayout, notMeetUpScheduledLayout;
     private PostAdapter mAdapter;
     private List<PostClass> itemList = new ArrayList<>();
@@ -71,7 +71,7 @@ public class MeetConferencePeopleFragmennt extends Fragment {
         loadingLayout = view.findViewById(R.id.loadingLayout);
         notMeetUpScheduledLayout = view.findViewById(R.id.noMeetUpLayout);
 
-        mAdapter = new PostAdapter(itemList, getActivity());
+        mAdapter = new PostAdapter(itemList, getActivity(), PostAdapter.CONF_DISC);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -123,7 +123,7 @@ public class MeetConferencePeopleFragmennt extends Fragment {
                     item = dataSnapshot.getValue(MeetUpClass.class);
                     locTextView.setText(item.getLocation());
                     timeTextView.setText(item.getTime());
-                    dateTextView.setText(item.getTime());
+                    dateTextView.setText(item.getDate());
 
 
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Locations").child("meet_up_conf_loc");
@@ -135,7 +135,7 @@ public class MeetConferencePeopleFragmennt extends Fragment {
 
 
                             Uri downloadUrl = uri;
-                            Picasso.get().load(downloadUrl.toString()).into(locImageView);
+                            Picasso.get().load(downloadUrl.toString()).resize(200,200).onlyScaleDown().centerInside().into(locImageView);
 
 
                         }
@@ -175,41 +175,43 @@ public class MeetConferencePeopleFragmennt extends Fragment {
     }
 
     private void setListenForMessage() {
-        if (listenForMessage) {
-            listenForMessage = false;
-            FirebaseUtilClass.getDatabaseReference().child("Chats").child("conf").orderByChild("msgTime").addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    setHaveData();
-                    PostClass temp = dataSnapshot.getValue(PostClass.class);
 
-                    //  PostClass temp = new PostClass((String) map.get("pushId"), (String) map.get("email"), (String) map.get("msg"), (long) map.get("msgTime"));
-                    itemList.add(temp);
-                    mAdapter.notifyDataSetChanged();
+        FirebaseUtilClass.getDatabaseReference().child("Chats").child("conf").orderByChild("msgTime").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                setHaveData();
+                PostClass temp = dataSnapshot.getValue(PostClass.class);
 
-                }
+                //  PostClass temp = new PostClass((String) map.get("pushId"), (String) map.get("email"), (String) map.get("msg"), (long) map.get("msgTime"));
+                itemList.add(temp);
+                mAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(itemList.size() - 1);
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
-                }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
 
-                }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                PostClass temp = dataSnapshot.getValue(PostClass.class);
+                itemList.remove(temp);
+                mAdapter.notifyDataSetChanged();
+            }
 
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
-        }
+            }
+        });
+
     }
 
     private void writeMsgToFirebase(final PostClass item) {

@@ -17,6 +17,7 @@
         android:text="Registration"
         android:textColor="@android:color/white"
         android:textSize="21sp"
+
         android:textStyle="bold" />
 
     <ScrollView

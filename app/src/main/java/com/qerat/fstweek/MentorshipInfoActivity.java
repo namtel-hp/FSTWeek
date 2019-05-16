@@ -27,31 +27,33 @@ import java.util.ArrayList;
 public class MentorshipInfoActivity extends AppCompatActivity {
     private Spinner purposeSpinner;
     private Switch mentorshipSwitch, crossSwitch;
-    private RadioButton lifeCheckBox,chemCheckBox,phyCheckBox,mathCheckBox,compCheckBox;
+    private RadioButton lifeCheckBox, chemCheckBox, phyCheckBox, mathCheckBox, compCheckBox;
     private TextInputLayout areaTextInputLayout, purposeTextInputLayout;
     private Button saveButton;
     private FirebaseAuth auth;
     private LinearLayout loadingLinearLayout, inputLinearLayout, mentorshipInfoLinearLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);setContentView(R.layout.activity_mentorship);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_mentorship);
 
-        purposeSpinner=findViewById(R.id.spinner_purpose);
-        mentorshipSwitch=findViewById(R.id.switch_mentorship);
-        crossSwitch=findViewById(R.id.switch_cross);
-        lifeCheckBox=findViewById(R.id.checkbox_life);
-        chemCheckBox=findViewById(R.id.checkbox_chem);
-        phyCheckBox=findViewById(R.id.checkbox_phy);
-        mathCheckBox=findViewById(R.id.checkbox_math);
-        compCheckBox=findViewById(R.id.checkbox_comp);
-        purposeTextInputLayout=findViewById(R.id.textinputlayout_purpose);
-        areaTextInputLayout=findViewById(R.id.textinputlayout_area);
-        saveButton=findViewById(R.id.button_save);
-        loadingLinearLayout=findViewById(R.id.loadingLayout);
-        inputLinearLayout=findViewById(R.id.inputLayout);
-        mentorshipInfoLinearLayout=findViewById(R.id.mentorshipInfoLayout);
+        purposeSpinner = findViewById(R.id.spinner_purpose);
+        mentorshipSwitch = findViewById(R.id.switch_mentorship);
+        crossSwitch = findViewById(R.id.switch_cross);
+        lifeCheckBox = findViewById(R.id.checkbox_life);
+        chemCheckBox = findViewById(R.id.checkbox_chem);
+        phyCheckBox = findViewById(R.id.checkbox_phy);
+        mathCheckBox = findViewById(R.id.checkbox_math);
+        compCheckBox = findViewById(R.id.checkbox_comp);
+        purposeTextInputLayout = findViewById(R.id.textinputlayout_purpose);
+        areaTextInputLayout = findViewById(R.id.textinputlayout_area);
+        saveButton = findViewById(R.id.button_save);
+        loadingLinearLayout = findViewById(R.id.loadingLayout);
+        inputLinearLayout = findViewById(R.id.inputLayout);
+        mentorshipInfoLinearLayout = findViewById(R.id.mentorshipInfoLayout);
 
-        auth= FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -81,9 +83,9 @@ public class MentorshipInfoActivity extends AppCompatActivity {
         mentorshipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     mentorshipInfoLinearLayout.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mentorshipInfoLinearLayout.setVisibility(View.INVISIBLE);
 
                 }
@@ -93,12 +95,12 @@ public class MentorshipInfoActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!purposeValidate()){
+                if (!purposeValidate()) {
                     purposeTextInputLayout.setError("Select a tier");
                     return;
                 }
 
-                if(!areaValidate()){
+                if (!areaValidate()) {
                     areaTextInputLayout.setError("Select at least one interest");
                     return;
                 }
@@ -108,57 +110,57 @@ public class MentorshipInfoActivity extends AppCompatActivity {
         });
 
 
-
     }
 
-    private void loadingSate(){
+    private void loadingSate() {
         loadingLinearLayout.setVisibility(View.VISIBLE);
         inputLinearLayout.setVisibility(View.INVISIBLE);
     }
-    private void inputState(){
+
+    private void inputState() {
         loadingLinearLayout.setVisibility(View.GONE);
         inputLinearLayout.setVisibility(View.VISIBLE);
     }
 
-    private boolean purposeValidate(){
-        return !(purposeSpinner.getSelectedItemPosition()==0) || !mentorshipSwitch.isChecked();
+    private boolean purposeValidate() {
+        return !(purposeSpinner.getSelectedItemPosition() == 0) || !mentorshipSwitch.isChecked();
     }
 
-    private boolean areaValidate(){
+    private boolean areaValidate() {
         return (lifeCheckBox.isChecked() || chemCheckBox.isChecked() || phyCheckBox.isChecked() || mathCheckBox.isChecked() || compCheckBox.isChecked()) || !mentorshipSwitch.isChecked();
     }
 
-    private void updateData(){
+    private void updateData() {
         loadingSate();
 
-        final String purposeStr=purposeSpinner.getSelectedItem().toString();
+        final String purposeStr = purposeSpinner.getSelectedItem().toString();
         final Boolean mentorshipBool = mentorshipSwitch.isChecked();
-        Boolean crossBool=crossSwitch.isChecked();
-       String areaStr="";
+        Boolean crossBool = crossSwitch.isChecked();
+        String areaStr = "";
 
-        if(lifeCheckBox.isChecked()){
-            areaStr=getResources().getString(R.string.ment_checkitem1);
+        if (lifeCheckBox.isChecked()) {
+            areaStr = getResources().getString(R.string.ment_checkitem1);
         }
-        if(chemCheckBox.isChecked()){
-            areaStr=getResources().getString(R.string.ment_checkitem2);
+        if (chemCheckBox.isChecked()) {
+            areaStr = getResources().getString(R.string.ment_checkitem2);
         }
-        if(phyCheckBox.isChecked()){
-            areaStr=getResources().getString(R.string.ment_checkitem3);
+        if (phyCheckBox.isChecked()) {
+            areaStr = getResources().getString(R.string.ment_checkitem3);
         }
-        if(mathCheckBox.isChecked()){
-            areaStr=getResources().getString(R.string.ment_checkitem4);
+        if (mathCheckBox.isChecked()) {
+            areaStr = getResources().getString(R.string.ment_checkitem4);
         }
-        if(compCheckBox.isChecked()){
-            areaStr=getResources().getString(R.string.ment_checkitem5);
+        if (compCheckBox.isChecked()) {
+            areaStr = getResources().getString(R.string.ment_checkitem5);
         }
         final String areaFinal = areaStr;
 
-        FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).child("mentorshipInformation").setValue(new MentorshipInformation(mentorshipBool,purposeStr,crossBool,areaFinal)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).child("mentorshipInformation").setValue(new MentorshipInformation(mentorshipBool, purposeStr, crossBool, areaFinal)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 
-                if(mentorshipBool) {
-                    FirebaseUtilClass.getDatabaseReference().child("MentorshipGroups").child(areaFinal).child("members").push().setValue(auth.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                if (mentorshipBool) {
+                    FirebaseUtilClass.getDatabaseReference().child("MentorshipGroups").child(purposeStr + "_" + areaFinal).child("members").push().setValue(auth.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 

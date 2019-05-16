@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
 
-                android:text="Nothing found!"
+                android:text="No discussion found! Add one?"
                 android:textStyle="italic" />
         </LinearLayout>
 

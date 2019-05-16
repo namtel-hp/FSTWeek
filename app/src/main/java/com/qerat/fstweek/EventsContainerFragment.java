@@ -44,6 +44,7 @@ public class EventsContainerFragment extends Fragment {
     private ArrayList<String> dayList = new ArrayList<>();
     private ViewPager viewPager;
     private EventViewPagerAdapter adapter;
+    private LinearLayout noEvents, hasEvents, loading;
     // private List<EventClass> itemList = new ArrayList<>();
     //   private List<DayEventClass> dayList = new ArrayList<>();
 
@@ -56,6 +57,7 @@ public class EventsContainerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Nullable
@@ -74,6 +76,10 @@ public class EventsContainerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        noEvents=view.findViewById(R.id.noMeetUpLayout);
+        loading=view.findViewById(R.id.loadingLayout);
+        hasEvents=view.findViewById(R.id.eventHas);
 
         registerButton = view.findViewById(R.id.participateButton);
 
@@ -130,6 +136,18 @@ public class EventsContainerFragment extends Fragment {
 
     }
 
+    private void setHasEvents(){
+        hasEvents.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
+        noEvents.setVisibility(View.GONE);
+    }
+
+    private void setNoEvents(){
+        hasEvents.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
+        noEvents.setVisibility(View.VISIBLE);
+    }
+
     private void setButtonText(String day){
         registerButton.setText("Register for "+day);
     }
@@ -168,6 +186,11 @@ public class EventsContainerFragment extends Fragment {
     }
 
     public void setDayList(ArrayList<String> dayList) {
+        if(dayList!=null && dayList.size()>0){
+            setHasEvents();
+        }else {
+            setNoEvents();
+        }
         this.dayList = dayList;
     }
 

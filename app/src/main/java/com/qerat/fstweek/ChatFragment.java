@@ -33,17 +33,16 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeetMentorFragment extends Fragment {
+public class ChatFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private TextView dateTextView, timeTextView, locTextView, noDiscussions;
+    private TextView noDiscussions;
     private EditText msgEditText;
-    private ImageView locImageView;
+
     private Button sendMsgButton, signUpButton;
-    private MeetUpClass item;
     private MentorshipInformation info;
 
-    private LinearLayout allOKLayout, loadingLayout, notMeetUpScheduledLayout, notAMentorshipLayout, failedLayout;
+    private LinearLayout allOKLayout, loadingLayout, notAMentorshipLayout, failedLayout;
     private PostAdapter mAdapter;
     private List<PostClass> itemList = new ArrayList<>();
 
@@ -52,7 +51,7 @@ public class MeetMentorFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        return inflater.inflate(R.layout.fragment_meet_mentorship, container, false);
+        return inflater.inflate(R.layout.fragment_chat, container, false);
 
     }
 
@@ -64,17 +63,15 @@ public class MeetMentorFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.discussions);
-        dateTextView = view.findViewById(R.id.dateTextView);
-        timeTextView = view.findViewById(R.id.timeTextView);
-        locTextView = view.findViewById(R.id.locationTextView);
+
         noDiscussions = view.findViewById(R.id.noDiscussionsMsg);
         msgEditText = view.findViewById(R.id.msgEditText);
-        locImageView = view.findViewById(R.id.locImageView);
+
         sendMsgButton = view.findViewById(R.id.postButton);
         failedLayout = view.findViewById(R.id.failedLayout);
         allOKLayout = view.findViewById(R.id.allOkLayout);
         loadingLayout = view.findViewById(R.id.loadingLayout);
-        notMeetUpScheduledLayout = view.findViewById(R.id.noMeetUpLayout);
+
         notAMentorshipLayout = view.findViewById(R.id.notAMentorLayout);
         signUpButton = view.findViewById(R.id.signUpButton);
 
@@ -83,7 +80,7 @@ public class MeetMentorFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(msgEditText.getText().toString().trim())) {
-                    String pushId = FirebaseUtilClass.getDatabaseReference().child("Chats").child("ment").child(info.getPurpose() + "_" + info.getAreaStudy()).push().getKey();
+                    String pushId = FirebaseUtilClass.getDatabaseReference().child("Chats").child("mentDirect").child(info.getPurpose() + "_" + info.getAreaStudy()).push().getKey();
                     writeMsgToFirebase(new PostClass(pushId, FirebaseAuth.getInstance().getCurrentUser().getEmail(), msgEditText.getText().toString()));
 
                 }
@@ -104,25 +101,19 @@ public class MeetMentorFragment extends Fragment {
         allOKLayout.setVisibility(View.VISIBLE);
         loadingLayout.setVisibility(View.GONE);
         notAMentorshipLayout.setVisibility(View.GONE);
-        notMeetUpScheduledLayout.setVisibility(View.GONE);
+
     }
 
-    private void setNotMeetUp() {
-        allOKLayout.setVisibility(View.GONE);
-        loadingLayout.setVisibility(View.GONE);
-        notAMentorshipLayout.setVisibility(View.GONE);
-        notMeetUpScheduledLayout.setVisibility(View.VISIBLE);
-    }
 
     private void seNotAMentorship() {
         allOKLayout.setVisibility(View.GONE);
         loadingLayout.setVisibility(View.GONE);
         notAMentorshipLayout.setVisibility(View.VISIBLE);
-        notMeetUpScheduledLayout.setVisibility(View.GONE);
+
     }
 
     private void checkIfMentor() {
-        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").child("mentorship").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").child("mentorship").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -151,7 +142,7 @@ public class MeetMentorFragment extends Fragment {
 
     private void writeMsgToFirebase(final PostClass item) {
         sendingMsg();
-        FirebaseUtilClass.getDatabaseReference().child("Chats").child("ment").child(info.getPurpose() + "_" + info.getAreaStudy()).child(item.getPushId()).setValue(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseUtilClass.getDatabaseReference().child("Chats").child("mentDirect").child(info.getPurpose() + "_" + info.getAreaStudy()).child(item.getPushId()).setValue(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 notSendingMsg();
@@ -171,67 +162,24 @@ public class MeetMentorFragment extends Fragment {
     private void sendingMsg() {
         msgEditText.setEnabled(false);
         sendMsgButton.setEnabled(false);
-        sendMsgButton.setText("POSTING..");
+        sendMsgButton.setText("Sending..");
     }
 
     private void notSendingMsg() {
         msgEditText.setEnabled(true);
         sendMsgButton.setEnabled(true);
-        sendMsgButton.setText("POST");
+        sendMsgButton.setText("Send");
     }
 
 
     public void readDataFromFirebase() {
 
-        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 info = dataSnapshot.getValue(MentorshipInformation.class);
-                FirebaseUtilClass.getDatabaseReference().child("MentorshipGroups").child(info.getPurpose() + "_" + info.getAreaStudy()).child("meetup").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if (!dataSnapshot.exists()) {
-                            setNotMeetUp();
-                        } else {
-                            setAllOk();
-                            setListenForMessage(info.getPurpose() + "_" + info.getAreaStudy());
-                            item = dataSnapshot.getValue(MeetUpClass.class);
-                            locTextView.setText(item.getLocation());
-                            timeTextView.setText(item.getTime());
-                            dateTextView.setText(item.getDate());
-
-
-                            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Locations").child(info.getPurpose() + "_" + info.getAreaStudy());
-
-
-                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-
-
-                                    Uri downloadUrl = uri;
-                                    Picasso.get().load(downloadUrl.toString()).resize(200,200).onlyScaleDown().centerInside().into(locImageView);
-
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                    //  holder.machineImage.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        setFailed();
-                    }
-                });
+                setListenForMessage(info.getPurpose() + "_" + info.getAreaStudy());
 
 
                 //  mAdapter.notifyDataSetChanged();
@@ -249,18 +197,16 @@ public class MeetMentorFragment extends Fragment {
 
     private void setListenForMessage(String pathId) {
 
-
-        mAdapter = new PostAdapter(itemList, getActivity(), PostAdapter.MENT_DISC, pathId);
+        mAdapter = new PostAdapter(itemList, getActivity(), PostAdapter.MENT_CHAT, pathId);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         itemList.clear();
-        FirebaseUtilClass.getDatabaseReference().child("Chats").child("ment").child(pathId).orderByChild("msgTime").addChildEventListener(new ChildEventListener() {
+        FirebaseUtilClass.getDatabaseReference().child("Chats").child("mentDirect").child(pathId).orderByChild("msgTime").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 setHaveData();
-
                 PostClass temp = dataSnapshot.getValue(PostClass.class);
 
                 //  PostClass temp = new PostClass((String) map.get("pushId"), (String) map.get("email"), (String) map.get("msg"), (long) map.get("msgTime"));

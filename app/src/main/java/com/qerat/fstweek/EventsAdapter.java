@@ -108,10 +108,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             @Override
             public void onClick(View v) {
                 holder.checkBox.setChecked(!holder.checkBox.isChecked());
-                if(holder.checkBox.isChecked()){
+                if (holder.checkBox.isChecked()) {
                     frag.addToList(item.getPushId());
                     frag.removeFromNotSelectedPushId(item.getPushId());
-                }else {
+                } else {
                     frag.removeFromList(item.getPushId());
                     frag.addToNotSelectedPushId(item.getPushId());
                 }
@@ -119,7 +119,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         });
         holder.setItem(item);
 
-        if(item.getSpeakerPushId()!=null){
+        if (item.getSpeakerPushId() != null) {
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Speakers").child(item.getSpeakerPushId());
 
 
@@ -130,7 +130,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                     holder.speakerImageView.setVisibility(View.VISIBLE);
                     Uri downloadUrl = uri;
 
-                    Picasso.get().load(downloadUrl.toString()).into(holder.speakerImageView);
+                    Picasso.get().load(downloadUrl.toString()).resize(200, 200).onlyScaleDown().centerInside().into(holder.speakerImageView);
                     holder.speakerImageView.invalidate();
 
 

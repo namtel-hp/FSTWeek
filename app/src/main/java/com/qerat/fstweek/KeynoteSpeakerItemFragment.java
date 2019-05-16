@@ -1,5 +1,6 @@
 package com.qerat.fstweek;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,14 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class KeynoteSpeakerItemFragment extends Fragment {
@@ -26,6 +31,7 @@ public class KeynoteSpeakerItemFragment extends Fragment {
     private SpeakerClass item;
     private TextView speakerNameTextView, speakerDetailsTextView, dayOfTalkTextView, keynoteTextView;
     private ImageView speakerImageView;
+    private File proPicFile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,6 +40,7 @@ public class KeynoteSpeakerItemFragment extends Fragment {
         item = (SpeakerClass) getArguments().getSerializable("item");
         return inflater.inflate(R.layout.fragment_speaker_item, container, false);
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -54,11 +61,13 @@ public class KeynoteSpeakerItemFragment extends Fragment {
 
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(final Uri uri) {
 
-                Uri downloadUrl = uri;
+                final Uri downloadUrl = uri;
 
-                Picasso.get().load(downloadUrl.toString()).into(speakerImageView);
+
+                Picasso.get().load(downloadUrl.toString()).resize(400, 400).onlyScaleDown().centerInside().into(speakerImageView);
+
 
             }
         }).addOnFailureListener(new OnFailureListener() {

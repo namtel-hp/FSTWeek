@@ -1,10 +1,14 @@
 package com.qerat.fstweek;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -65,6 +69,12 @@ public class PanelDiscussionsFragment extends Fragment {
             }
         });
 
+        mAdapter = new PostAdapter(itemList, getActivity(),PostAdapter.PANEL);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
         setListenForMessage();
     }
 
@@ -93,6 +103,16 @@ public class PanelDiscussionsFragment extends Fragment {
             public void onSuccess(Void aVoid) {
                 notSendingMsg();
                 msgEditText.setText("");
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Your post will be reviewed before it's publicly visible. Thanks.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
 
             }
 
@@ -106,7 +126,7 @@ public class PanelDiscussionsFragment extends Fragment {
     }
 
     private void setListenForMessage() {
-
+        itemList.clear();
         FirebaseUtilClass.getDatabaseReference().child("PanelDisc").child("accepted").orderByChild("msgTime").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -116,6 +136,7 @@ public class PanelDiscussionsFragment extends Fragment {
                 //  PostClass temp = new PostClass((String) map.get("pushId"), (String) map.get("email"), (String) map.get("msg"), (long) map.get("msgTime"));
                 itemList.add(temp);
                 mAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(itemList.size() - 1);
 
             }
 
@@ -126,7 +147,9 @@ public class PanelDiscussionsFragment extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                PostClass temp = dataSnapshot.getValue(PostClass.class);
+                itemList.remove(temp);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override

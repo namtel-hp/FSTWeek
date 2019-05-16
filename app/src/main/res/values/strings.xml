@@ -28,16 +28,7 @@
         <item>MSc</item>
         <item>Mphil</item>
         <item>Phd</item>
-        <item>MSE</item>
-        <item>ME</item>
-        <item>IEM</item>
-        <item>LE</item>
-        <item>TE</item>
-        <item>ESE</item>
-        <item>CE</item>
-        <item>URP</item>
-        <item>BECM</item>
-        <item>ARCH</item>
+
     </string-array>
     <string-array name="tiers">
         <item>--Select Your Tier--</item>

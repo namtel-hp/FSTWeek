@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,15 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyNoteSpeakerContainerFragment extends Fragment {
-  //  private View v;
+
     private TextView fragNoTextView, totFragNoTextView;
     private ImageView nextImageView, prevImageView;
-
-
-    //  private ArrayList<KeynoteSpeakerItemFragment> itemList = new ArrayList<>();
+    private LinearLayout noEvents, loading;
+    private RelativeLayout hasEvents;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        noEvents=view.findViewById(R.id.noMeetUpLayout);
+        loading=view.findViewById(R.id.loadingLayout);
+        hasEvents=view.findViewById(R.id.hasSpeaker);
 
 
         nextImageView = view.findViewById(R.id.nextLayout);
@@ -81,8 +86,23 @@ public class KeyNoteSpeakerContainerFragment extends Fragment {
         // readDataFromFirebase();
 
     }
+    private void setHasEvents(){
+        hasEvents.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
+        noEvents.setVisibility(View.GONE);
+    }
 
+    private void setNoEvents(){
+        hasEvents.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
+        noEvents.setVisibility(View.VISIBLE);
+    }
     public void setTotPage(int i) {
+        if(i>0){
+            setHasEvents();
+        }else {
+            setNoEvents();
+        }
         totFragNoTextView.setText(String.valueOf(i));
     }
 
@@ -90,83 +110,12 @@ public class KeyNoteSpeakerContainerFragment extends Fragment {
         fragNoTextView.setText(String.valueOf(i));
     }
 
-    /*
 
-
-        private void changeFragment(int index) {
-
-            if (currIndex < index) {
-                if (index >= itemList.size()) {
-                    index = 0;
-                    currIndex = -1;
-                }
-
-
-                getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).replace(R.id.speakerFrameLayout, itemList.get(index)).commit();
-                currIndex++;
-
-            } else {
-                if (index <= -1) {
-                    index = itemList.size() - 1;
-                    currIndex = itemList.size();
-                }
-
-
-                getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.speakerFrameLayout, itemList.get(index)).commit();
-                currIndex--;
-
-            }
-            fragNoTextView.setText(String.valueOf(index+1));
-        }
-    */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-      //  if (v != null) {
-      //      if ((ViewGroup) v.getParent() != null)
-     //           ((ViewGroup) v.getParent()).removeView(v);
-     //       return v;
-     //   }
-     //   v = inflater.inflate(R.layout.fragment_keynote_container, container, false);
-
         return inflater.inflate(R.layout.fragment_keynote_container, container, false);
     }
-/*
-    public void readDataFromFirebase() {
-        FirebaseUtilClass.getDatabaseReference().child("Speakers").orderByChild("dayOfTalk").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                itemList.clear();
-                //      fragItem.clear();
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
 
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("item", dsp.getValue(SpeakerClass.class));
-
-
-                    KeynoteSpeakerItemFragment temp = new KeynoteSpeakerItemFragment();
-                    temp.setArguments(bundle);
-                    itemList.add(temp);
-                    //add result into array list
-                    //  fragItem.add(temp);
-                }
-                totFragNoTextView.setText(String.valueOf(itemList.size()));
-                progressBar.setVisibility(View.GONE);
-                if (first) {
-                    changeFragment(0);
-                    first = false;
-                }
-
-                //   Toast.makeText(getContext(), "Changed something", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-    */
 }

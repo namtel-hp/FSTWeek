@@ -94,12 +94,12 @@ public class MyGroupFragment extends Fragment {
     }
 
     private void checkIfMentor() {
-        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").child("mentorship").addValueEventListener(new ValueEventListener() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").child("mentorship").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Boolean ment = dataSnapshot.getValue(Boolean.class);
-                if (ment) {
+                if (ment!=null && ment) {
                     readDataFromFirebase();
                 } else {
                     seNotAMentorship();
@@ -115,7 +115,7 @@ public class MyGroupFragment extends Fragment {
 
     public void readDataFromFirebase() {
 
-        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").addValueEventListener(new ValueEventListener() {
+        FirebaseUtilClass.getDatabaseReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("mentorshipInformation").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MentorshipInformation info = dataSnapshot.getValue(MentorshipInformation.class);
@@ -131,7 +131,7 @@ public class MyGroupFragment extends Fragment {
 
                             itemList.add(dsp.getValue(String.class));
 
-                            FirebaseUtilClass.getDatabaseReference().child("Users").child(dsp.getValue(String.class)).addValueEventListener(new ValueEventListener() {
+                            FirebaseUtilClass.getDatabaseReference().child("Users").child(dsp.getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 

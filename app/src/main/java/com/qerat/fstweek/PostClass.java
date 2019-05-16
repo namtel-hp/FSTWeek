@@ -55,6 +55,15 @@ public class PostClass {
         this.msgTime = msgTime;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof PostClass))
+            return false;
+        PostClass other = (PostClass) obj;
+        return pushId == null ? false :pushId.equals(other.pushId);//Compare Id if null falseF
+    }
     public String getPushId() {
         return pushId;
     }
