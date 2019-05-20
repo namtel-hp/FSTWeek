@@ -17,6 +17,7 @@ A Event management android app. On each event one speaker will give speech on a 
 3. Notification update when the app is in the background
 4. Realtime discussions/chatting
 5. Admin app can add and monitor them
+6. Splash Screen
 
 # Preview
 
