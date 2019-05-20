@@ -1,5 +1,5 @@
 # FSTWeek
-A Event management android app where can be many events. On each event one speaker will give speech on a fixed topic. The user can view the events, register them, as well as see the speakers. There will have a meet up events for the users. User can view the meet up event, disccuss there. There also a chat platform for the users whcih will be monitored by the admins by FSTWeekAdmin app. Link: 
+A Event management android app. On each event one speaker will give speech on a fixed topic. The user can view the events, register them, as well as see the speakers. There will have a meet up events for the users. User can view the meet up event, disccuss there. There also a chat platform for the users whcih will be monitored by the admins by FSTWeekAdmin app. Link: 
 
 # This app uses
 
