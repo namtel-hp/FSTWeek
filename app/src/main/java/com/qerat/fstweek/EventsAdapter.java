@@ -1,5 +1,7 @@
 package com.qerat.fstweek;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +38,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         private ImageView noImageImageView, speakerImageView;
         private EventClass item;
         private CardView parent;
-        private CheckBox checkBox;
+        private LinearLayout checkBox;
 
         //todo: add checkbox
 
@@ -91,29 +94,51 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
 
             if (item.getParticipantsMap().get(FirebaseAuth.getInstance().getCurrentUser().getUid()) != null) {
-                holder.checkBox.setChecked(true);
-                frag.addToList(item.getPushId());
+                holder.checkBox.setVisibility(View.VISIBLE);
+                frag.addToList(item);
                 //  holder.parent.setBackgroundColor(context.getResources().getColor(R.color.very_light_green));
 
             } else {
-                holder.checkBox.setChecked(false);
-                frag.addToNotSelectedPushId(item.getPushId());
+                holder.checkBox.setVisibility(View.INVISIBLE);
+                frag.addToNotSelectedPushId(item);
             }
         } else {
-            holder.checkBox.setChecked(false);
-            frag.addToNotSelectedPushId(item.getPushId());
+            holder.checkBox.setVisibility(View.INVISIBLE);
+            frag.addToNotSelectedPushId(item);
         }
 
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.checkBox.setChecked(!holder.checkBox.isChecked());
-                if (holder.checkBox.isChecked()) {
-                    frag.addToList(item.getPushId());
-                    frag.removeFromNotSelectedPushId(item.getPushId());
+                if (holder.checkBox.getVisibility() == View.VISIBLE) {
+                    holder.checkBox.animate().translationX(100).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.checkBox.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
                 } else {
-                    frag.removeFromList(item.getPushId());
-                    frag.addToNotSelectedPushId(item.getPushId());
+                    holder.checkBox.animate().translationX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            holder.checkBox.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    holder.checkBox.setVisibility(View.VISIBLE);
+                }
+
+                if (holder.checkBox.getVisibility() == View.VISIBLE) {
+                    frag.addToList(item);
+                    frag.removeFromNotSelectedPushId(item);
+                } else {
+                    frag.removeFromList(item);
+                    frag.addToNotSelectedPushId(item);
                 }
             }
         });

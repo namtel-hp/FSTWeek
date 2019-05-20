@@ -1,5 +1,6 @@
 package com.qerat.fstweek;
 
+import android.app.usage.UsageEvents;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,13 +46,10 @@ public class EventsContainerFragment extends Fragment {
     private ViewPager viewPager;
     private EventViewPagerAdapter adapter;
     private LinearLayout noEvents, hasEvents, loading;
-    // private List<EventClass> itemList = new ArrayList<>();
-    //   private List<DayEventClass> dayList = new ArrayList<>();
 
-    //   private EventsAdapter mAdapter;
 
-    private List<String> selectedPushId = new ArrayList<>();
-    private List<String> notSelectedPushId = new ArrayList<>();
+    private List<EventClass> selectedPushId = new ArrayList<>();
+    private List<EventClass> notSelectedPushId = new ArrayList<>();
 
 
     @Override
@@ -63,13 +61,6 @@ public class EventsContainerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //   if (v != null) {
-        //       if ((ViewGroup) v.getParent() != null)
-        //            ((ViewGroup) v.getParent()).removeView(v);
-        //        return v;
-        //     }
-//
-        //  v = inflater.inflate(R.layout.fragment_conf, container, false);
         return inflater.inflate(R.layout.fragment_conf, container, false);
     }
 
@@ -77,9 +68,9 @@ public class EventsContainerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        noEvents=view.findViewById(R.id.noMeetUpLayout);
-        loading=view.findViewById(R.id.loadingLayout);
-        hasEvents=view.findViewById(R.id.eventHas);
+        noEvents = view.findViewById(R.id.noMeetUpLayout);
+        loading = view.findViewById(R.id.loadingLayout);
+        hasEvents = view.findViewById(R.id.eventHas);
 
         registerButton = view.findViewById(R.id.participateButton);
 
@@ -125,7 +116,8 @@ public class EventsContainerFragment extends Fragment {
             @Override
             public void onPageSelected(int i) {
                 dayNoTextView.setText(String.valueOf(dayList.get(i)));
-                setButtonText(dayList.get(i));
+
+
             }
 
             @Override
@@ -136,29 +128,26 @@ public class EventsContainerFragment extends Fragment {
 
     }
 
-    private void setHasEvents(){
+    private void setHasEvents() {
         hasEvents.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
         noEvents.setVisibility(View.GONE);
     }
 
-    private void setNoEvents(){
+    private void setNoEvents() {
         hasEvents.setVisibility(View.GONE);
         loading.setVisibility(View.GONE);
         noEvents.setVisibility(View.VISIBLE);
     }
 
-    private void setButtonText(String day){
-        registerButton.setText("Register for "+day);
-    }
 
     private int dataWritten = 0;
 
     private void writeDataToFirebase() {
         loadingData();
-        for (String str : selectedPushId) {
+        for (EventClass str : selectedPushId) {
             dataWritten++;
-            FirebaseUtilClass.getDatabaseReference().child("Talks").child(dayList.get(viewPager.getCurrentItem())).child(str).child("participantsMap").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue("p").addOnSuccessListener(new OnSuccessListener<Void>() {
+            FirebaseUtilClass.getDatabaseReference().child("Talks").child(str.getDay()).child(str.getPushId()).child("participantsMap").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue("p").addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     dataWritten--;
@@ -170,9 +159,9 @@ public class EventsContainerFragment extends Fragment {
 
         }
 
-        for (String str : notSelectedPushId) {
+        for (EventClass str : notSelectedPushId) {
             dataWritten++;
-            FirebaseUtilClass.getDatabaseReference().child("Talks").child(dayList.get(viewPager.getCurrentItem())).child(str).child("participantsMap").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            FirebaseUtilClass.getDatabaseReference().child("Talks").child(str.getDay()).child(str.getPushId()).child("participantsMap").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     dataWritten--;
@@ -186,9 +175,9 @@ public class EventsContainerFragment extends Fragment {
     }
 
     public void setDayList(ArrayList<String> dayList) {
-        if(dayList!=null && dayList.size()>0){
+        if (dayList != null && dayList.size() > 0) {
             setHasEvents();
-        }else {
+        } else {
             setNoEvents();
         }
         this.dayList = dayList;
@@ -203,26 +192,26 @@ public class EventsContainerFragment extends Fragment {
     }
 
     private void notLoadingData() {
-        registerButton.setText("Registered");
+        registerButton.setText("Register");
         registerButton.setEnabled(true);
         nextImageView.setEnabled(true);
         prevImageView.setEnabled(true);
     }
 
-    public void addToNotSelectedPushId(String str) {
+    public void addToNotSelectedPushId(EventClass str) {
         notSelectedPushId.add(str);
     }
 
-    public void removeFromNotSelectedPushId(String str) {
+    public void removeFromNotSelectedPushId(EventClass str) {
         notSelectedPushId.remove(str);
     }
 
 
-    public void addToList(String str) {
+    public void addToList(EventClass str) {
         selectedPushId.add(str);
     }
 
-    public void removeFromList(String str) {
+    public void removeFromList(EventClass str) {
         selectedPushId.remove(str);
     }
 

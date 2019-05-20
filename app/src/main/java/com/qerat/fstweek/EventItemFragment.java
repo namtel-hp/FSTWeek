@@ -30,13 +30,8 @@ public class EventItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-    //    if (v != null) {
-    //        if ((ViewGroup) v.getParent() != null)
-    //            ((ViewGroup) v.getParent()).removeView(v);
-    //        return v;
-    //    }
+
         day = getArguments().getString("item");
-      //  v = inflater.inflate(R.layout.fragment_event_items, container, false);
         return inflater.inflate(R.layout.fragment_event_items, container, false);
     }
 

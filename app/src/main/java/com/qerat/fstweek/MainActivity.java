@@ -22,6 +22,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity
     private MyGroupFragment myGroupFragment;
     private PanelDiscussionsFragment panelDiscussionsFragment;
     private ChatFragment chatFragment;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,10 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle("Events");
 
 
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.textView2);
+        navUsername.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
     }
 

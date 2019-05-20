@@ -135,4 +135,27 @@ public class EventClass implements Serializable {
     public void setSpeakerPushId(String speakerPushId) {
         this.speakerPushId = speakerPushId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof EventClass)) {
+            return false;
+        }
+
+        EventClass c = (EventClass) o;
+
+        if (this.pushId == null && c.pushId == null) {
+            return true;
+        } else if (this.pushId == null) {
+            return false;
+        } else if (c.pushId == null) {
+            return false;
+        }
+
+        return c.pushId.equals(this.pushId);
+    }
 }

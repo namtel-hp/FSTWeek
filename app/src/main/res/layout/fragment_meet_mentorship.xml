@@ -8,9 +8,9 @@
     <LinearLayout
         android:id="@+id/allOkLayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -213,6 +213,14 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="We'll notify you as soon as available."
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -251,8 +259,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <ProgressBar
             android:layout_width="30dp"

@@ -1,5 +1,6 @@
 package com.qerat.fstweek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,7 +41,8 @@ public class SignUpActivity extends AppCompatActivity {
     private Button signUpButton, signInButton, okButton;
 
     private FirebaseAuth auth;
-private LinearLayout parent,loadingLayout, inputLayout, successLayout;
+    private LinearLayout parent, loadingLayout, inputLayout, successLayout;
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
@@ -65,11 +67,11 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         levelSpinner = findViewById(R.id.spinner_level);
         signInButton = findViewById(R.id.button_signin);
         signUpButton = findViewById(R.id.button_signup);
-        parent=findViewById(R.id.parent);
+        parent = findViewById(R.id.parent);
 
-        loadingLayout=findViewById(R.id.loadingLayout);
-        inputLayout=findViewById(R.id.inputLayout);
-        successLayout=findViewById(R.id.successLayout);
+        loadingLayout = findViewById(R.id.loadingLayout);
+        inputLayout = findViewById(R.id.inputLayout);
+        successLayout = findViewById(R.id.successLayout);
         okButton = findViewById(R.id.button_signupsuccess);
 
         auth = FirebaseAuth.getInstance();
@@ -209,13 +211,12 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
             public void onClick(View v) {
                 hideKeyboard();
                 String fullname = fullNameTextInputLayout.getEditText().getText().toString();
-                String email = emailTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
-                String age = ageTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
-                String phnNo = phoneNoTextInputLayout.getEditText().getText().toString().replaceAll("\\s+","");
+                String email = emailTextInputLayout.getEditText().getText().toString().replaceAll("\\s+", "");
+                String age = ageTextInputLayout.getEditText().getText().toString().replaceAll("\\s+", "");
+                String phnNo = phoneNoTextInputLayout.getEditText().getText().toString().replaceAll("\\s+", "");
                 String selectedLevel = levelSpinner.getSelectedItem().toString();
                 String password = passwordTextInputLayout.getEditText().getText().toString();
                 String confirmmPassword = confirmPasswordTextInputLayout.getEditText().getText().toString();
-
 
 
                 if (!validateFullName(fullname)) {
@@ -248,7 +249,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
                     return;
                 }
 
-                signMeUp(fullname,age,phnNo,selectedLevel,email, password);
+                signMeUp(fullname, age, phnNo, selectedLevel, email, password);
 
 
             }
@@ -256,28 +257,37 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
 
     }
 
-    private void loadingState(){
+    private void loadingState() {
         loadingLayout.setVisibility(View.VISIBLE);
         successLayout.setVisibility(View.GONE);
         inputLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void inputState(){
+    private void inputState() {
         loadingLayout.setVisibility(View.GONE);
         successLayout.setVisibility(View.GONE);
         inputLayout.setVisibility(View.VISIBLE);
     }
 
-    private void successState(){
+    private void successState() {
         loadingLayout.setVisibility(View.GONE);
         successLayout.setVisibility(View.VISIBLE);
         inputLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void putInformation(UserDetails user){
+    private void putInformation(UserDetails user) {
         FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+
+
+                SharedPreferences pref = getSharedPreferences(MyService.PREFERENCE_NAME, Activity.MODE_PRIVATE);
+                String s = pref.getString("UserToken", "null");
+
+
+
+                FirebaseUtilClass.getDatabaseReference().child("UserTokens").child(s).setValue(true);
+
 
                 successState();
                 SharedPreferences sharedPref = SignUpActivity.this.getPreferences(Context.MODE_PRIVATE);
@@ -295,7 +305,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
         });
     }
 
-    private void signMeUp(final String fullname, final String age, final String phnNo, final String selectedLevel,final String email, final String password) {
+    private void signMeUp(final String fullname, final String age, final String phnNo, final String selectedLevel, final String email, final String password) {
         loadingState();
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -306,7 +316,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
                     inputState();
                 } else {
 
-                    putInformation(new UserDetails(fullname,age,phnNo,selectedLevel,email));
+                    putInformation(new UserDetails(fullname, age, phnNo, selectedLevel, email));
 
 
                 }
@@ -315,7 +325,6 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
             }
         });
     }
-
 
 
     private void hideKeyboard() {
@@ -334,7 +343,7 @@ private LinearLayout parent,loadingLayout, inputLayout, successLayout;
 
     public boolean validateLevel() {
 
-        return !(levelSpinner.getSelectedItemPosition()==0);
+        return !(levelSpinner.getSelectedItemPosition() == 0);
     }
 
     public boolean validatePassword(String password) {

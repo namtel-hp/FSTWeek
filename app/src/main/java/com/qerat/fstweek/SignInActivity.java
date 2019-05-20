@@ -1,9 +1,11 @@
 package com.qerat.fstweek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -82,6 +84,11 @@ public class SignInActivity extends AppCompatActivity {
                                 snackbar.show();
                                 initialState();
                             } else {
+                                SharedPreferences pref = getSharedPreferences(MyService.PREFERENCE_NAME, Activity.MODE_PRIVATE);
+                                String s = pref.getString("UserToken", "null");
+
+
+                                FirebaseUtilClass.getDatabaseReference().child("UserTokens").child(s).setValue(true);
 
                                 FirebaseUtilClass.getDatabaseReference().child("Users").child(auth.getCurrentUser().getUid()).child("conferenceInformation").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -90,10 +97,10 @@ public class SignInActivity extends AppCompatActivity {
                                             Intent intent = new Intent(SignInActivity.this, ConferenceInfoActivity.class);
                                             startActivity(intent);
 
-                                            SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.putInt(POSITION_KEY, CONF_INFO);
-                                            editor.commit();
+                                            editor.apply();
                                             SignInActivity.this.finish();
 
                                         } else {
@@ -103,7 +110,7 @@ public class SignInActivity extends AppCompatActivity {
                                                     if (!snapshot.exists()) {
                                                         Intent intent = new Intent(SignInActivity.this, MentorshipInfoActivity.class);
                                                         startActivity(intent);
-                                                        SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                         editor.putInt(POSITION_KEY, MENT_INFO);
                                                         editor.commit();
@@ -111,7 +118,7 @@ public class SignInActivity extends AppCompatActivity {
                                                     } else {
                                                         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                                         startActivity(intent);
-                                                        SharedPreferences sharedPref = SignInActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                         editor.putInt(POSITION_KEY, MAIN_ACTV);
                                                         editor.commit();
@@ -146,7 +153,7 @@ public class SignInActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         if (auth.getCurrentUser() != null) {
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
             int pur = sharedPref.getInt(POSITION_KEY, MAIN_ACTV);

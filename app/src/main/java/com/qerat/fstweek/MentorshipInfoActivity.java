@@ -1,9 +1,11 @@
 package com.qerat.fstweek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -164,11 +166,17 @@ public class MentorshipInfoActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
 
-
-                            SharedPreferences sharedPref = MentorshipInfoActivity.this.getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putInt(SignInActivity.POSITION_KEY, SignInActivity.MAIN_ACTV);
-                            editor.commit();
+                            editor.apply();
+
+
+                            SharedPreferences pref = getSharedPreferences(MyService.PREFERENCE_NAME, Activity.MODE_PRIVATE);
+                            String s = pref.getString("UserToken", "null");
+
+
+                            FirebaseUtilClass.getDatabaseReference().child("MentUserTokens").child(purposeStr + "_" + areaFinal).child(s).setValue(true);
                             Intent intent = new Intent(MentorshipInfoActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -182,10 +190,10 @@ public class MentorshipInfoActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    SharedPreferences sharedPref = MentorshipInfoActivity.this.getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt(SignInActivity.POSITION_KEY, SignInActivity.MAIN_ACTV);
-                    editor.commit();
+                    editor.apply();
                     Intent intent = new Intent(MentorshipInfoActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
