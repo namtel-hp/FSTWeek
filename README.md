@@ -6,7 +6,7 @@ A Event management android app. On each event one speaker will give speech on a 
 1. Firebase Authentication (Sign up/Sign in)
 2. Firebase Realtime Database (Online databse for the all information)
 3. Firebase Storage (Uploading and viewing some images)
-4. Firebase Functions (Sending realtime notifications based on the realtime database. Link: )
+4. Firebase Functions (Sending realtime notifications based on the realtime database. Firebase function uses server side Node.js code. Link: https://github.com/tareqjoy/FSTWeek/blob/master/index.js)
 5. Firebase Cloud Messaging (To send notification using Firebase Functions)
 6. Navigation drawer, ViewPager, Nested Fragments, RecyclerView
 
@@ -14,7 +14,7 @@ A Event management android app. On each event one speaker will give speech on a 
 
 1. Sign in/Sign up
 2. Realtime updates
-3. Notification update when the app is in the background
+3. Notification update when the app is in the background (Node.js, Link: https://github.com/tareqjoy/FSTWeek/blob/master/index.js)
 4. Realtime discussions/chatting
 5. Admin app can add and monitor them
 6. Splash Screen
