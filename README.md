@@ -17,3 +17,12 @@ A Event management android app. On each event one speaker will give speech on a 
 3. Notification update when the app is in the background
 4. Realtime discussions/chatting
 5. Admin app can add and monitor them
+
+# Preview
+
+<p align="center">
+  <img src="/preview/1.png" width="150" title="Notification drawer">
+  <img src="/preview/2.png" width="150" title="Events">
+  <img src="/preview/3.png" width="150" title="Meet up">
+  <img src="/preview/4.png" width="150" title="Chat">
+</p>
